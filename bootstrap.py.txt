@@ -1,0 +1,54 @@
+from pathlib import Path
+import zipfile
+
+# Define the folder structure
+base_path = Path("/mnt/data/raccoonops-field-manual")
+docs_path = base_path / "docs"
+appendices_path = docs_path / "appendices"
+assets_path = docs_path / "assets"
+diagrams_path = assets_path / "diagrams"
+stickers_path = assets_path / "stickers"
+
+# Create directories
+for path in [docs_path, appendices_path, diagrams_path, stickers_path]:
+    path.mkdir(parents=True, exist_ok=True)
+
+# Define the markdown files with placeholder content
+files = {
+    docs_path / "index.md": "# 📜 RaccoonOps Field Manual\n\nWelcome to the Trash Stack.\n",
+    docs_path / "doctrine.md": "# Doctrine & Ethos\n\n> \"A tangled ball of trash...\"\n",
+    docs_path / "tools.md": "# Tools of the Trade\n\n> \"Simple and composable...\"\n",
+    docs_path / "incident-response.md": "# Incident Response\n\n> \"Explain your system...\"\n",
+    docs_path / "dumpster-cleaning.md": "# Cleaning the Dumpster\n\n> \"Every cron job...\"\n",
+    docs_path / "security.md": "# Safety, Security & Sabotage\n\n> \"You wouldn’t leave your bin...\"\n",
+    docs_path / "chaos-recovery.md": "# Chaos Engineering & Recovery\n\n> \"If chaos is inevitable...\"\n",
+    docs_path / "checklists.md": "# Checklists & Cheatsheets\n\n> \"Checklists are just spells...\"\n",
+    docs_path / "lore.md": "# Lore, Culture, and Memeology\n\n> \"Our uptime is sacred...\"\n",
+    appendices_path / "loadouts.md": "# Loadouts & Kits\n",
+    appendices_path / "templates.md": "# Templates\n",
+    appendices_path / "printables.md": "# Printables\n",
+    appendices_path / "questions.md": "# Appendix Z: Questions We Ask Ourselves\n"
+}
+
+# Create markdown files with content
+for path, content in files.items():
+    path.write_text(content)
+
+# Sample Mermaid diagram file
+(diagrams_path / "incident-lifecycle.mmd").write_text("""
+graph TD
+    A[Alert Triggered] --> B[Triage]
+    B --> C[Containment]
+    C --> D[Communication]
+    D --> E[Mitigation]
+    E --> F[Postmortem]
+""")
+
+# Create a zip file
+zip_path = Path("/mnt/data/raccoonops_field_manual.zip")
+with zipfile.ZipFile(zip_path, 'w') as zipf:
+    for path in base_path.rglob("*"):
+        if path.is_file():
+            zipf.write(path, path.relative_to(base_path))
+
+zip_path.name
